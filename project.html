@@ -160,8 +160,9 @@ modelFit &lt;- train(training1$classe ~ ., method=&quot;gbm&quot;, data=trainPC,
 ## The final values used for the model were n.trees = 150,
 ##  interaction.depth = 3, shrinkage = 0.1 and n.minobsinnode = 10.</code></pre>
 <p>We then test the model on the the validation dataset, which was borne out of our original training set.</p>
-<pre class="r"><code>testPC &lt;- predict(preProc,valid1[,-49])
-confusionMatrix(valid1$classe, predict(modelFit,testPC))</code></pre>
+<pre class="r"><code>validatePC &lt;- predict(preProc,valid1[,-49])
+confusionMatrix(valid1$classe, predict(modelFit,validatePC))</code></pre>
+<pre><code>## Loading required package: plyr</code></pre>
 <pre><code>## Confusion Matrix and Statistics
 ## 
 ##           Reference
@@ -193,10 +194,22 @@ confusionMatrix(valid1$classe, predict(modelFit,testPC))</code></pre>
 ## Detection Rate         0.2542   0.1428   0.1408   0.1327   0.1397
 ## Detection Prevalence   0.2844   0.1935   0.1744   0.1639   0.1838
 ## Balanced Accuracy      0.9043   0.8500   0.8397   0.8885   0.9220</code></pre>
-<p>The accuracy was found to be quite high, around 80%.</p>
+<p>The accuracy was found to be quite high, around 81%. The out of sample error is estimated to be 18.67%.</p>
 </div>
-<div id="v.-references" class="section level3">
-<h3>V. References</h3>
+<div id="v.-predicting" class="section level3">
+<h3>V. Predicting</h3>
+<p>Finally, we attempt to use the model to predict the test sample, which can be downloaded <a href="https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv">here</a>. This test dataset contains 20 observations.</p>
+<p>We read the test data from our working directory, assign it the values for the variable identified by principal component analysis.</p>
+<pre class="r"><code>testdata &lt;- read.csv(&quot;pml-testing.csv&quot;)
+testdata &lt;- testdata[,var_col]
+testPC &lt;- predict(preProc, testdata[,-49])</code></pre>
+<p>We then predict the class variable that each of the 20 observations belong to.</p>
+<pre class="r"><code>predict(modelFit, newdata=testPC)</code></pre>
+<pre><code>##  [1] B A C A A E D B A A A C B A E E A B B B
+## Levels: A B C D E</code></pre>
+</div>
+<div id="vi.-references" class="section level3">
+<h3>VI. References</h3>
 <ol style="list-style-type: decimal">
 <li>Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13) . Stuttgart, Germany: ACM SIGCHI, 2013.</li>
 </ol>

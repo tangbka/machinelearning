@@ -69,14 +69,33 @@ modelFit
 We then test the model on the the validation dataset, which was borne out of our original training set.
 
 ```{r}
-testPC <- predict(preProc,valid1[,-49])
-confusionMatrix(valid1$classe, predict(modelFit,testPC))
+validatePC <- predict(preProc,valid1[,-49])
+confusionMatrix(valid1$classe, predict(modelFit,validatePC))
 ```
 
-The accuracy was found to be quite high, around 80%.
+The accuracy was found to be quite high, around 81%. The out of sample error is estimated to be 18.67%.
 
 
-### V. References
+### V. Predicting 
+
+Finally, we attempt to use the model to predict the test sample, which can be downloaded [here](https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv). This test dataset contains 20 observations.
+
+We read the test data from our working directory, assign it the values for the variable identified by principal component analysis.
+
+```{r}
+testdata <- read.csv("pml-testing.csv")
+testdata <- testdata[,var_col]
+testPC <- predict(preProc, testdata[,-49])
+```
+
+We then predict the class variable that each of the 20 observations belong to.
+
+```{r}
+predict(modelFit, newdata=testPC)
+```
+
+
+### VI. References
 
 1. Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.
 
